@@ -1,5 +1,4 @@
 {
-    "version": 2,
     "builds": [
       {
         "src": "api/main.py",
@@ -12,5 +11,6 @@
         "dest": "api/main.py"
       }
     ],
+    
   }
   
