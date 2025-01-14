@@ -5,7 +5,9 @@ import io
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.requests import Request
+from transformers import pipeline
 
+generator = pipeline('text-generation', model='meta-llama/Llama-2-7b-hf')
 reader = easyocr.Reader(["en"])
 
 app = FastAPI()
@@ -22,8 +24,11 @@ def extract_text_from_image(image_bytes):
     img_byte_arr = img_byte_arr.getvalue()
     result = reader.readtext(img_byte_arr)
     # Extract and return the text
-    extracted_text = " ".join([text[1] for text in result])
-    return extracted_text
+    text= " ".join([text[1] for text in result])
+    prompt = f'make it in an object format as an api response: {text}'
+    extracted_text_1 = generator(prompt, max_length=10000)
+
+    return extracted_text_1
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -38,13 +43,8 @@ async def perform_ocr(file: UploadFile = File(...)):
             return {"error": "Invalid file type. Please upload a PNG or JPEG image."}
 
         image_bytes = await file.read()
-        extracted_text = extract_text_from_image(image_bytes)
-        return {"text": extracted_text}
-        
+        extracted_text_1 = extract_text_from_image(image_bytes)
+        return {"text_1": extracted_text_1}
     except Exception as e:
         return {"error":f"An error occured: {str(e)}"}
 
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(app, host="0.0.0.0", port=8000)
