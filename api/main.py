@@ -7,7 +7,6 @@ from fastapi.templating import Jinja2Templates
 from fastapi.requests import Request
 from transformers import pipeline
 
-generator = pipeline('text-generation', model='meta-llama/Llama-2-7b-hf')
 reader = easyocr.Reader(["en"])
 
 app = FastAPI()
@@ -24,10 +23,9 @@ def extract_text_from_image(image_bytes):
     img_byte_arr = img_byte_arr.getvalue()
     result = reader.readtext(img_byte_arr)
     # Extract and return the text
-    text= " ".join([text[1] for text in result])
-    prompt = f'make it in an object format as an api response: {text}'
-    extracted_text_1 = generator(prompt, max_length=10000)
-
+    extracted_text_1= " ".join([text[1] for text in result])
+   
+   
     return extracted_text_1
 
 
