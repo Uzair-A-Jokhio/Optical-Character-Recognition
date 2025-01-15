@@ -5,7 +5,6 @@ import io
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.requests import Request
-from transformers import pipeline
 
 reader = easyocr.Reader(["en"])
 
